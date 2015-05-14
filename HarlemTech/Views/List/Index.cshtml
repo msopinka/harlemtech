@@ -1,0 +1,40 @@
+﻿@model HarlemTech.Models.PoiModel
+@using HarlemTech.Helpers
+@{
+    ViewBag.Title = "A-Z List";
+}
+
+<div class="wrapper">
+    <ul class="card-list">
+        @foreach (var poi in Model.POIs)
+        {
+            var logo = Model.Images.FirstOrDefault(m => m.Id.Equals(poi.Logo));
+            <li>
+                <img src="@(logo != null ? "http://harlemtechcms.azurewebsites.net/" + logo.Url : "/images/placeholder.png")" />
+                <div class="text">
+                    <h2 class="title">@poi.Name</h2>
+                    <article class="description">@poi.Description</article>
+                    <a class="website" href="@Html.SanitizeWebsiteLink(poi.Website)" target="_blank">@poi.Website</a>
+                </div>
+                <div class="clearfix"></div>
+            </li>
+        }
+        <div class="clearfix"></div>
+    </ul>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function (e) {
+        var tallest = 0;
+        $('.card-list li').each(function (idx, obj) {
+            if (idx > 0 && idx % 2 == 1) {
+                if ($(this).height() > $(this).prev().height()) {
+                    $(this).prev().height($(this).height());
+                }
+                else {
+                    $(this).height($(this).prev().height());
+                }
+            }
+        });
+    });
+</script>

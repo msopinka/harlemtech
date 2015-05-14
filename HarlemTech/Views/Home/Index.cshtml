@@ -1,0 +1,126 @@
+﻿@model HarlemTech.Models.PoiModel
+@using HarlemTech.Helpers
+@{
+    ViewBag.Title = "Harlem Tech";
+}
+
+<div class="map">
+    <div id="map-canvas"></div>
+</div>
+
+<div class="filter">
+    <a href="#" data-target="#" class="btn dropdown-toggle" data-toggle="dropdown">
+        <span class="fa fa-filter"></span> Filter
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu pull-right map-filter">
+        <li><a href="#" data-tag="all">All</a></li>
+        <li><a href="#" data-tag="cowork">Co-working Spaces</a></li>
+        <li><a href="#" data-tag="accelerator">Incubators/Accelerators</a></li>
+        <li><a href="#" data-tag="techcompany">Tech Companies</a></li>
+        <li><a href="#" data-tag="freelance">Freelance Talent</a></li>
+        <li><a href="#" data-tag="org">Community Organizations</a></li>
+        <li><a href="#" data-tag="event">Events/Hackathons</a></li>
+    </ul>
+</div>
+
+<!-- Filter Dropdown -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.map-filter a').click(function(e) {
+            e.preventDefault();
+            var tag = $(this).data('tag');
+            if (tag === 'all') {
+                $(markers).each(function(idx, obj) {
+                    obj.setVisible(true);
+                });
+            }
+            else {
+                $(markers).each(function(idx, obj) {
+                    if (obj.getIcon().indexOf(tag) === -1) {
+                        obj.setVisible(false);
+                    }
+                    else {
+                        obj.setVisible(true);
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+<!-- Google Maps -->
+<script type="text/javascript">
+    var map;
+    var lastPopup;
+    var markers = [];
+
+    function initialize() {
+        var mapOptions = {
+            zoom: 14,
+            center: new google.maps.LatLng(40.8090, -73.9484)
+        };
+        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+        @foreach(var poi in Model.POIs)
+        {
+            var logo = Model.Images.FirstOrDefault(m => m.Id.Equals(poi.Logo));
+            <text>
+        var marker@(poi.Id) = new google.maps.Marker({
+            position: new google.maps.LatLng(@poi.Latitude + (Math.random() > 0.5 ? 0.00001 : -0.00009) + Math.random() * 0.00008, @poi.Longitude + (Math.random() > 0.5 ? 0.00001 : -0.00009) + Math.random() * 0.00008),
+            @if (poi.Type == "Co-working Space")
+            {
+                @:icon: '/images/cowork_pushpin.svg'
+                                                            }
+            else if (poi.Type == "Incubator/Accelerator")
+            {
+                @:icon: '/images/accelerator_pushpin.svg'
+                                    }
+            else if (poi.Type == "Tech Company")
+            {
+                @:icon: '/images/techcompany_pushpin.svg'
+                                    }
+            else if (poi.Type == "Community Organization")
+            {
+                @:icon: '/images/org_pushpin.svg'
+                    }
+            else if (poi.Type == "Event/Hackathon")
+            {
+                @:icon: '/images/event_pushpin.svg'
+                    }
+            else if (poi.Type == "Freelance Talent")
+            {
+                @:icon: '/images/freelance_pushpin.svg'
+            }
+        });
+    marker@(poi.Id).setMap(map);
+    google.maps.event.addListener(marker@(poi.Id), 'click', function() {
+        var popupText = '<div class="infowindow"><img src="@(logo != null ? "http://harlemtechcms.azurewebsites.net/" + logo.Url : "/images/placeholder.png")" />' +
+                '<div class="text">' +
+                    '<h2 class="title">@poi.Name</h2>' +
+                    '<article class="description">@Html.Raw(WebUtility.HtmlEncode(poi.Description.Replace("\r\n", "<br>")))</article>' +
+                    '<a class="website" href="@Html.SanitizeWebsiteLink(poi.Website)" target="_blank">@poi.Website</a>' +
+                '</div>' +
+                '<div class="clearfix"></div></div>';
+            var infowindow = new google.maps.InfoWindow({
+                content: popupText
+            });
+            if (lastPopup != null) {
+                lastPopup.close();
+            }
+            infowindow.open(map, marker@(poi.Id));
+        lastPopup = infowindow;
+    });
+    markers.push(marker@(poi.Id));
+    </text>
+        }
+
+    google.maps.event.addListener(map, 'click', function() {
+        if (lastPopup != null) {
+            lastPopup.close();
+        }
+    });
+    }
+
+    google.maps.event.addDomListener(window, 'load', initialize);
+</script>

@@ -1,0 +1,34 @@
+﻿@model HarlemTech.Models.ContactModel
+@{
+    ViewBag.Title = "Submit A Tip";
+}
+
+<div class="contact-form">
+    <div class="container">
+        <h2>Submit A Tip</h2>
+        <p>Have a great tech tip for the Harlem community? Submit it here and our moderators will review it.</p>
+        @using (Html.BeginForm("submit", "contact", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <div id="form-div">
+                <p class="name">
+                    @Html.TextBoxFor(x => x.Name, new { @class = "feedback-input", @placeholder = "Name", @id = "name" })
+                </p>
+
+                <p class="email">
+                    @Html.TextBoxFor(x => x.Email, new { @class = "feedback-input", @placeholder = "Email", @id = "email" })
+                </p>
+
+                <p class="text">
+                    @Html.TextAreaFor(x => x.Comment, new { @class = "feedback-input", @placeholder = "Comment", @id = "comment" })
+                </p>
+
+
+                <div class="submit">
+                    <input type="submit" value="SUBMIT" id="button-blue" />
+                    <div class="ease"></div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
