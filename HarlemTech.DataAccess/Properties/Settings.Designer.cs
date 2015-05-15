@@ -26,8 +26,7 @@ namespace HarlemTech.DataAccess.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=toj90akyy4.database.windows.net;Initial Catalog=harlemtATE5cogWV;User" +
-            " ID=HarlemAdmin;Password=ht3c4DB2015!;Connect Timeout=60")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string harlemtATE5cogWVConnectionString {
             get {
                 return ((string)(this["harlemtATE5cogWVConnectionString"]));
